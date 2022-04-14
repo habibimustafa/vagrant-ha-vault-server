@@ -1,0 +1,7 @@
+.idea/
+.vagrant/
+*.log
+# please download consul binary from https://www.consul.io/downloads.html
+consul
+# please download vault binary from https://www.vaultproject.io/downloads
+vault
