@@ -10,4 +10,4 @@ storage "consul" {
 }
 
 api_addr = "http://$API_ADDR:8200"
-cluster_addr = "https://$API_ADDR:8201"
+cluster_addr = "http://$API_ADDR:8201"
