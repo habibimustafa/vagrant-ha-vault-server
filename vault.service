@@ -17,6 +17,7 @@ After=network-online.target
 User=vault
 Group=vault
 PIDFile=/var/run/vault/vault.pid
+ExecStartPre=/usr/bin/env VAULT_ADDR="http://127.0.0.1:8200"
 ExecStart=/usr/bin/vault server -config=/etc/vault.d/vault.hcl -log-level=debug
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
