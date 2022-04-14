@@ -79,7 +79,6 @@ Vagrant.configure("2") do |config|
         cp /vagrant/vault.hcl /etc/vault.d/
         cp /vagrant/vault.service /etc/systemd/system
         cp /vagrant/vault /usr/bin/
-        export VAULT_ADDR="http://127.0.0.1:8200"
       SHELL
 
       retry_joins = cluster_ips.map { |ip| "\"#{ip}\"" }.join(', ')
@@ -101,6 +100,8 @@ Vagrant.configure("2") do |config|
         systemctl enable vault.service
         systemctl start vault.service
         systemctl status vault.service
+        export VAULT_ADDR="http://127.0.0.1:8200"
+        echo $VAULT_ADDR
       SHELL
     end
   end
