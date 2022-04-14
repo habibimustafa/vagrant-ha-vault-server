@@ -9,7 +9,7 @@ bootstrap_expect    = 3
 retry_join          = "$RETRY_JOINS"
 
 ui_config {
-    "enabled" = true
+    enabled = true
 }
 
 log_level           = "DEBUG"
