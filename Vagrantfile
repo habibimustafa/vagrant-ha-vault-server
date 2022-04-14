@@ -18,15 +18,15 @@ Vagrant.configure("2") do |config|
   cluster_ips.each_with_index do |node_ip, index|
     box_hostname = "#{CONSUL_PREFIX}-s#{index+1}"
 
-    config.vm.define box_hostname do |db|
-      db.vm.hostname = box_hostname
-      db.vm.network "private_network", ip: node_ip
+    config.vm.define box_hostname do |node|
+      node.vm.hostname = box_hostname
+      node.vm.network "private_network", ip: node_ip
 
-      db.vm.provider "virtualbox" do |vb|
+      node.vm.provider "virtualbox" do |vb|
         vb.name = box_hostname
       end
 
-      db.vm.provision "shell", run: "once", inline: <<-SHELL
+      node.vm.provision "shell", run: "once", inline: <<-SHELL
         useradd --no-create-home --shell /bin/false consul
         mkdir -p /var/consul/data
         chown -R consul:consul /var/consul/
@@ -41,11 +41,11 @@ Vagrant.configure("2") do |config|
       replace_advertise_addr = "sed -i 's/$ADVERTISE_ADDR/#{node_ip}/' /etc/consul.d/consul.json"
       replace_all_retry_joins = "sed -i 's/\"$RETRY_JOINS\"/[#{retry_joins}]/' /etc/consul.d/consul.json"
 
-      db.vm.provision :shell, run: 'once', inline: replace_node_name
-      db.vm.provision :shell, run: 'once', inline: replace_advertise_addr
-      db.vm.provision :shell, run: 'once', inline: replace_all_retry_joins
+      node.vm.provision :shell, run: 'once', inline: replace_node_name
+      node.vm.provision :shell, run: 'once', inline: replace_advertise_addr
+      node.vm.provision :shell, run: 'once', inline: replace_all_retry_joins
 
-      db.vm.provision "shell", run: "once", inline: <<-SHELL
+      node.vm.provision "shell", run: "once", inline: <<-SHELL
         systemctl daemon-reload
         systemctl enable consul.service
         systemctl start consul.service
@@ -57,15 +57,15 @@ Vagrant.configure("2") do |config|
   vault_ips = VAULT_SERVER_IPS
   vault_ips.each_with_index do |node_ip, index|
     box_hostname = "#{VAULT_PREFIX}-c#{index+1}"
-    config.vm.define box_hostname do |db|
-      db.vm.hostname = box_hostname
-      db.vm.network "private_network", ip: node_ip
+    config.vm.define box_hostname do |node|
+      node.vm.hostname = box_hostname
+      node.vm.network "private_network", ip: node_ip
 
-      db.vm.provider "virtualbox" do |vb|
+      node.vm.provider "virtualbox" do |vb|
         vb.name = box_hostname
       end
 
-      db.vm.provision "shell", run: "once", inline: <<-SHELL
+      node.vm.provision "shell", run: "once", inline: <<-SHELL
         useradd --no-create-home --shell /bin/false consul
         mkdir -p /var/consul/data
         chown -R consul:consul /var/consul/
@@ -87,12 +87,12 @@ Vagrant.configure("2") do |config|
       replace_all_retry_joins = "sed -i 's/\"$RETRY_JOINS\"/[#{retry_joins}]/' /etc/consul.d/consul.json"
       replace_vault_ip_addr = "sed -i 's/$API_ADDR/#{node_ip}/' /etc/vault.d/vault.hcl"
 
-      db.vm.provision :shell, run: 'once', inline: replace_node_name
-      db.vm.provision :shell, run: 'once', inline: replace_bind_addr
-      db.vm.provision :shell, run: 'once', inline: replace_all_retry_joins
-      db.vm.provision :shell, run: 'once', inline: replace_vault_ip_addr
+      node.vm.provision :shell, run: 'once', inline: replace_node_name
+      node.vm.provision :shell, run: 'once', inline: replace_bind_addr
+      node.vm.provision :shell, run: 'once', inline: replace_all_retry_joins
+      node.vm.provision :shell, run: 'once', inline: replace_vault_ip_addr
 
-      db.vm.provision "shell", run: "once", inline: <<-SHELL
+      node.vm.provision "shell", run: "once", inline: <<-SHELL
         systemctl daemon-reload
         systemctl enable consul.service
         systemctl start consul.service
