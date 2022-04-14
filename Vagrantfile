@@ -100,6 +100,8 @@ Vagrant.configure("2") do |config|
         systemctl enable vault.service
         systemctl start vault.service
         systemctl status vault.service
+        echo 'export VAULT_ADDR="http://127.0.0.1:8200"' >> /home/vagrant/.bashrc
+        source /home/vagrant/.bashrc
       SHELL
     end
   end
